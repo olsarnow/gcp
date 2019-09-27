@@ -13,4 +13,9 @@ gcloud compute instances create $nodename --image-family=$family --image-project
 
 sleep 30
 
-gcloud compute instances reset $nodename
+ip=`gcloud compute instances describe $nodename --format='get(networkInterfaces[0].accessConfigs[0].natIP)'`
+
+dir=/Users/oli/git/bfctermine-chef
+
+cd $dir
+knife bootstrap $ip -U oli --sudo -i /Users/oli/.ssh/id_rsa -N $nodename -r 'role[docker]' --chef-license accept -y -E dev
